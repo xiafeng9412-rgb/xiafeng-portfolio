@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>夏峰 · 视觉设计师作品集</title>
+  <meta name="canvas:aspect-ratio" content="16:9">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@200;300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --seed-bg: #0a0a0a;
+      --seed-fg: #fafafa;
+      --seed-accent: #FFB8DF;
+      --seed-surface: #18181b;
+      --seed-radius: 20px;
+      --bg: var(--seed-bg);
+      --fg: var(--seed-fg);
+      --accent: var(--seed-accent);
+      --surface: var(--seed-surface);
+      --radius: var(--seed-radius);
+      --pink: #FFB8DF;
+      --lime: #AEFF62;
+      --purple: #B98EFF;
+      --yellow: #FFE878;
+      --cyan: #66DDFF;
+      --green: #6EFF9C;
+      --red: #FF6B6B;
+      --orange: #FF9F43;
+      --font-display: 'Urbanist', 'Noto Sans SC', system-ui, sans-serif;
+      --font-body: 'Urbanist', 'Noto Sans SC', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+
+      /* Extended surface + alpha tokens */
+      --black: #000000;
+      --card-bg: #111111;
+      --card-alt: #151515;
+      --loader-bar-bg: #222222;
+      --white: #ffffff;
+      --fg-90: rgba(255,255,255,0.9);
+      --fg-70: rgba(255,255,255,0.7);
+      --fg-50: rgba(255,255,255,0.5);
+      --fg-45: rgba(255,255,255,0.45);
+      --fg-40: rgba(255,255,255,0.4);
+      --fg-35: rgba(255,255,255,0.35);
+      --fg-25: rgba(255,255,255,0.25);
+      --fg-12: rgba(255,255,255,0.12);
+      --fg-08: rgba(255,255,255,0.08);
+      --fg-06: rgba(255,255,255,0.06);
+      --fg-05: rgba(255,255,255,0.05);
+      --fg-04: rgba(255,255,255,0.04);
+      --logo-start: #2d7a3a;
+      --logo-end: #4ade80;
+      --surface-alt: #050505;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--font-body); overflow-x: hidden; line-height: 1.6; }
+    ::selection { background: var(--pink); color: var(--black); }
+    img, video { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--font-body); }
+
+    /* ===================== LOADER ===================== */
+    .loader {
+      position: fixed; inset: 0; background: var(--black); z-index: 9999;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      transition: opacity 0.6s ease, visibility 0.6s;
+    }
+    .loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-text { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; letter-spacing: 0.2em; color: var(--fg); }
+    .loader-text .g { color: var(--lime); }
+    .loader-bar { width: 120px; height: 2px; background: var(--loader-bar-bg); margin-top: 1.5rem; border-radius: 2px; overflow: hidden; }
+    .loader-bar::after { content: ''; display: block; height: 100%; width: 0; background: var(--lime); animation: loadB 1.8s ease forwards; }
+    @keyframes loadB { to { width: 100%; } }
+
+    /* ===================== NAV ===================== */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 60px; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(0,0,0,0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      transition: background 0.3s;
+    }
+    .nav-logo {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--logo-start), var(--logo-end));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.9rem; color: var(--white);
+      flex-shrink: 0;
+    }
+    .nav-center { display: flex; gap: 2.5rem; position: absolute; left: 50%; transform: translateX(-50%); }
+    .nav-center a {
+      font-size: 0.9rem; font-weight: 500; color: var(--fg-70);
+      transition: color 0.3s; letter-spacing: 0.02em;
+    }
+    .nav-center a:hover { color: var(--white); }
+    .nav-explore {
+      background: var(--white); color: var(--black); border: none;
+      padding: 0.5rem 1.4rem; border-radius: 100px;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-explore:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(255,255,255,0.15); }
+
+    /* ===================== HERO CAROUSEL ===================== */
+    .hero-carousel {
+      position: relative; width: 100%; height: 100vh; overflow: hidden;
+    }
+    .hero-slides {
+      display: flex; width: 100%; height: 100%;
+      transition: transform 0.8s var(--ease);
+    }
+    .hero-slide {
+      min-width: 100%; height: 100%; position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .hero-slide-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      filter: brightness(0.55);
+      transition: transform 8s ease;
+    }
+    .hero-slide-video {
+      position: absolute; inset: 0; z-index: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      filter: brightness(0.45);
+    }
+    .hero-slide.active .hero-slide-bg { transform: scale(1.06); }
+    .hero-slide-content {
+      position: relative; z-index: 2;
+      text-align: center; padding: 2rem;
+    }
+    .hero-title {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(3rem, 9vw, 7.5rem);
+      line-height: 0.95; letter-spacing: -0.03em;
+      color: var(--white); text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .hero-title .p { color: var(--pink); }
+    .hero-title .g { color: var(--lime); }
+    .hero-title .c { color: var(--cyan); }
+    .hero-subtitle {
+      font-size: clamp(0.85rem, 1.5vw, 1.1rem);
+      color: rgba(255,255,255,0.55); font-weight: 300;
+      margin-top: 1rem; letter-spacing: 0.08em;
+    }
+    .hero-subtitle .tagline { display: block; margin-top: 0.5rem; font-size: 0.9rem; color: var(--fg-40); }
+    .hero-slide-label {
+      position: absolute; bottom: 5rem; left: 3rem; z-index: 3;
+      font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--fg-35); letter-spacing: 0.15em;
+    }
+    /* Carousel dots */
+    .carousel-dots {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 10; display: flex; gap: 8px;
+    }
+    .carousel-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--fg-25); border: none; cursor: pointer;
+      transition: all 0.3s;
+    }
+    .carousel-dot.active { background: var(--white); transform: scale(1.2); }
+    /* Carousel arrows */
+    .carousel-arrow {
+      position: absolute; top: 50%; z-index: 10;
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      color: var(--white); font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s; backdrop-filter: blur(8px);
+    }
+    .carousel-arrow:hover { background: rgba(255,255,255,0.15); }
+    .carousel-arrow.prev { left: 2rem; transform: translateY(-50%); }
+    .carousel-arrow.next { right: 2rem; transform: translateY(-50%); }
+
+    /* ===================== CREATIVE WORK FLOATING CARDS ===================== */
+    .creative-section {
+      position: relative; padding: 6rem 2rem; background: var(--black);
+      min-height: 100vh; overflow: hidden;
+    }
+    .creative-title {
+      text-align: center; margin-bottom: 1rem; position: relative; z-index: 2;
+    }
+    .creative-title h2 {
+      font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800; letter-spacing: -0.02em; line-height: 1;
+    }
+    .creative-title h2 .l1 { color: var(--cyan); }
+    .creative-title h2 .l2 { color: var(--red); }
+    .creative-title h2 .l3 { color: var(--orange); }
+    .creative-title h2 .l4 { color: var(--yellow); }
+    .creative-title h2 .l5 { color: var(--green); }
+    .creative-title h2 .l6 { color: var(--cyan); }
+    .creative-title h2 .l7 { color: var(--pink); }
+    .creative-title h2 .l8 { color: var(--lime); }
+    .creative-title h2 .l9 { color: var(--white); }
+    .creative-title h2 .l10 { color: var(--green); }
+    .creative-subtitle {
+      text-align: center; color: rgba(255,255,255,0.45);
+      font-size: 0.95rem; margin-bottom: 1.5rem; position: relative; z-index: 2;
+    }
+    .creative-view-more {
+      display: block; margin: 0 auto 3rem;
+      background: var(--white); color: var(--black); border: none;
+      padding: 0.6rem 1.8rem; border-radius: 100px;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer;
+      position: relative; z-index: 2;
+      transition: transform 0.2s;
+    }
+    .creative-view-more:hover { transform: scale(1.05); }
+    .floating-cards {
+      position: relative; z-index: 1;
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 1.5rem; max-width: 1100px; margin: 0 auto;
+      perspective: 1200px;
+    }
+    .float-card {
+      width: 220px; height: 280px; border-radius: 16px;
+      overflow: hidden; position: relative;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      transition: transform 0.5s var(--ease-spring), box-shadow 0.5s;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .float-card:hover { transform: rotate(0deg) scale(1.08) !important; box-shadow: 0 16px 60px rgba(0,0,0,0.7); z-index: 5; }
+    .float-card img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .float-card-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1rem; background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    }
+    .float-card-info h4 { font-size: 0.8rem; font-weight: 600; color: var(--white); }
+    .float-card-info span { font-size: 0.65rem; color: var(--fg-50); }
+
+    /* ===================== RECENT WORKS ===================== */
+    .recent-section { padding: 6rem 0; background: var(--black); overflow: hidden; }
+    .recent-header { padding: 0 3rem; margin-bottom: 3rem; }
+    .recent-header h2 {
+      font-family: var(--font-display); font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1;
+      text-transform: uppercase;
+    }
+    .recent-header h2 .grn { color: var(--lime); }
+    .recent-header .tagline-text {
+      font-size: clamp(1rem, 2vw, 1.6rem); color: var(--fg-50);
+      font-weight: 400; margin-top: 0.5rem; letter-spacing: 0.02em;
+    }
+    .recent-header .tagline-text .pk { color: var(--pink); }
+    .recent-scroll {
+      display: flex; gap: 1.5rem; padding: 0 3rem;
+      overflow-x: auto; scrollbar-width: none;
+      -ms-overflow-style: none; padding-bottom: 1rem;
+    }
+    .recent-scroll::-webkit-scrollbar { display: none; }
+    .recent-card {
+      min-width: 320px; max-width: 360px; border-radius: 16px;
+      overflow: hidden; position: relative;
+      background: var(--card-bg); flex-shrink: 0;
+      transition: transform 0.4s var(--ease-spring);
+      cursor: pointer;
+    }
+    .recent-card:hover { transform: translateY(-6px); }
+    .recent-card img {
+      width: 100%; height: 260px; object-fit: cover;
+    }
+    .recent-card-body {
+      padding: 1.2rem 1.4rem;
+    }
+    .recent-card-body h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .recent-card-body p { font-size: 0.78rem; color: rgba(255,255,255,0.45); line-height: 1.5; }
+    .recent-card-body .card-cat {
+      display: inline-block; font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.08em; padding: 0.2rem 0.6rem; border-radius: 100px;
+      margin-bottom: 0.6rem;
+    }
+    .cat-pink { color: var(--pink); background: rgba(255,184,223,0.12); }
+    .cat-lime { color: var(--lime); background: rgba(174,255,98,0.12); }
+    .cat-purple { color: var(--purple); background: rgba(185,142,255,0.12); }
+    .cat-cyan { color: var(--cyan); background: rgba(102,221,255,0.12); }
+    .cat-yellow { color: var(--yellow); background: rgba(255,232,120,0.12); }
+    .cat-green { color: var(--green); background: rgba(110,255,156,0.12); }
+
+    /* ===================== CATEGORIES GRID ===================== */
+    .categories-section { padding: 6rem 2rem; background: var(--black); }
+    .categories-title {
+      text-align: center; margin-bottom: 0.5rem;
+    }
+    .categories-title h2 {
+      font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 800; letter-spacing: -0.02em;
+    }
+    .categories-title h2 .l1 { color: var(--green); }
+    .categories-title h2 .l2 { color: var(--pink); }
+    .categories-title h2 .l3 { color: var(--white); }
+    .categories-title h2 .l4 { color: var(--green); }
+    .categories-title h2 .l5 { color: var(--cyan); }
+    .categories-sub {
+      text-align: center; color: var(--fg-40);
+      font-size: 0.95rem; margin-bottom: 3rem;
+    }
+    .categories-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem; max-width: 1100px; margin: 0 auto;
+    }
+    .cat-card {
+      background: var(--card-alt); border-radius: 20px; padding: 2rem 1.8rem;
+      border: 1px solid var(--fg-05);
+      transition: border-color 0.3s, transform 0.3s var(--ease-spring);
+      cursor: pointer;
+    }
+    .cat-card:hover { border-color: var(--fg-12); transform: translateY(-4px); }
+    .cat-card-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; margin-bottom: 1.2rem;
+    }
+    .cat-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .cat-card p { font-size: 0.82rem; color: var(--fg-40); line-height: 1.6; }
+    .cat-card-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.78rem; font-weight: 500; margin-top: 1.2rem;
+      transition: gap 0.3s;
+    }
+    .cat-card:hover .cat-card-link { gap: 0.7rem; }
+    .cat-card-preview {
+      width: 100%; height: 140px; border-radius: 12px;
+      overflow: hidden; margin-top: 1rem;
+    }
+    .cat-card-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ===================== ABOUT / DESIGNER SECTION ===================== */
+    .about-section { padding: 6rem 2rem; background: var(--black); }
+    .about-container { max-width: 1100px; margin: 0 auto; }
+    .about-intro {
+      text-align: center; max-width: 700px; margin: 0 auto 4rem;
+      font-size: 1rem; color: var(--fg-50); line-height: 2;
+    }
+    .about-split {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+      margin-bottom: 4rem;
+    }
+    .about-image {
+      border-radius: 20px; overflow: hidden; aspect-ratio: 4/3;
+    }
+    .about-image img { width: 100%; height: 100%; object-fit: cover; }
+    .about-text-block { display: flex; flex-direction: column; justify-content: center; }
+    .about-text-block h3 {
+      font-family: var(--font-display); font-size: 1.8rem; font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .about-text-block p {
+      color: var(--fg-50); font-size: 0.95rem; line-height: 1.9;
+      margin-bottom: 1rem;
+    }
+    .about-designer-label {
+      font-family: var(--font-display); font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 800; letter-spacing: -0.02em;
+      position: relative; display: inline-block;
+    }
+    .about-designer-label .e { color: var(--lime); }
+    .about-stats-row {
+      display: flex; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;
+    }
+    .about-stat {
+      background: var(--card-alt); border-radius: 16px; padding: 1.5rem 2rem;
+      flex: 1; min-width: 160px; text-align: center;
+      border: 1px solid var(--fg-05);
+    }
+    .about-stat .num {
+      font-family: var(--font-display); font-size: 2.5rem; font-weight: 700;
+    }
+    .about-stat .lbl { font-size: 0.78rem; color: var(--fg-40); margin-top: 0.3rem; }
+
+    /* ===================== SKILLS ===================== */
+    .skills-section { padding: 5rem 2rem; background: var(--surface-alt); }
+    .skills-container { max-width: 1100px; margin: 0 auto; }
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    .skill-item {
+      background: var(--card-bg); border-radius: 16px; padding: 2rem 1.5rem;
+      text-align: center; border: 1px solid var(--fg-04);
+      transition: all 0.3s;
+    }
+    .skill-item:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-3px); }
+    .skill-item .icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+    .skill-item h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .skill-item p { font-size: 0.75rem; color: var(--fg-35); line-height: 1.5; }
+
+    /* ===================== VIDEO SECTION ===================== */
+    .video-section { padding: 6rem 2rem; background: var(--black); }
+    .video-container { max-width: 1100px; margin: 0 auto; }
+    .video-header { margin-bottom: 3rem; }
+    .video-header h2 {
+      font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800; letter-spacing: -0.02em;
+    }
+    .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .video-card {
+      border-radius: 20px; overflow: hidden;
+      background: var(--card-bg); border: 1px solid var(--fg-05);
+    }
+    .video-card video { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+    .video-card-info { padding: 1rem 1.2rem; }
+    .video-card-info h4 { font-size: 0.9rem; font-weight: 600; }
+    .video-card-info span { font-size: 0.72rem; color: var(--fg-40); }
+
+    /* ===================== PORTFOLIO CTA ===================== */
+    .portfolio-cta {
+      padding: 5rem 2rem; background: var(--surface-alt);
+      display: flex; justify-content: center;
+    }
+    .portfolio-cta-card {
+      max-width: 900px; width: 100%;
+      background: linear-gradient(135deg, var(--card-bg), var(--card-alt));
+      border: 1px solid var(--fg-08);
+      border-radius: 24px; padding: 3.5rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; transition: border-color 0.3s, transform 0.3s;
+      text-decoration: none;
+    }
+    .portfolio-cta-card:hover {
+      border-color: var(--pink); transform: translateY(-4px);
+    }
+    .portfolio-cta-info h3 {
+      font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.6rem;
+    }
+    .portfolio-cta-info h3 .pk { color: var(--pink); }
+    .portfolio-cta-info h3 .lm { color: var(--lime); }
+    .portfolio-cta-info p {
+      font-size: 0.9rem; color: var(--fg-50); line-height: 1.7; max-width: 480px;
+    }
+    .portfolio-cta-btn {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--pink); color: var(--black);
+      padding: 0.85rem 2rem; border-radius: 100px;
+      font-size: 0.9rem; font-weight: 700; letter-spacing: 0.02em;
+      transition: transform 0.2s, box-shadow 0.3s;
+      white-space: nowrap;
+    }
+    .portfolio-cta-card:hover .portfolio-cta-btn {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255,184,223,0.3);
+    }
+    .portfolio-cta-btn svg {
+      width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2;
+    }
+
+    /* ===================== CTA BOLD ===================== */
+    .cta-section {
+      padding: 8rem 2rem; background: var(--black);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .cta-section h2 {
+      font-family: var(--font-display); font-size: clamp(2.8rem, 8vw, 7rem);
+      font-weight: 900; letter-spacing: -0.03em; line-height: 0.95;
+      text-transform: uppercase;
+    }
+    .cta-section h2 .p { color: var(--pink); }
+    .cta-section h2 .g { color: var(--lime); }
+    .cta-section h2 .line { display: block; }
+
+    /* ===================== RESUME ===================== */
+    .resume-section { padding: 5rem 2rem; background: var(--surface-alt); }
+    .resume-container { max-width: 1100px; margin: 0 auto; }
+    .resume-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    .resume-info h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
+    .resume-info p { color: var(--fg-50); font-size: 0.92rem; line-height: 1.8; margin-bottom: 1rem; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1.5rem 0; }
+    .skill-tag {
+      font-size: 0.75rem; font-weight: 500; padding: 0.35rem 0.9rem;
+      border-radius: 100px; background: var(--fg-06);
+      border: 1px solid var(--fg-08); color: rgba(255,255,255,0.6);
+    }
+    .resume-download {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--lime); color: var(--black); padding: 0.7rem 1.6rem;
+      border-radius: 100px; font-size: 0.85rem; font-weight: 600;
+      transition: transform 0.2s;
+    }
+    .resume-download:hover { transform: scale(1.05); }
+    .resume-download svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    /* ===================== FOOTER ===================== */
+    .footer-section {
+      padding: 5rem 2rem 2rem; background: var(--black);
+      position: relative; overflow: hidden;
+    }
+    .footer-bg-image {
+      position: absolute; inset: 0; z-index: 0;
+      opacity: 0.04; background-size: cover; background-position: center;
+    }
+    .footer-content {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 3rem; max-width: 1100px; margin: 0 auto;
+    }
+    .footer-brand .logo-text {
+      font-family: var(--font-display); font-size: 1.2rem; font-weight: 700;
+      margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem;
+    }
+    .footer-brand .logo-text .dot { width: 28px; height: 28px; border-radius: 6px; background: linear-gradient(135deg, var(--logo-start), var(--logo-end)); display: inline-block; }
+    .footer-brand p { font-size: 0.82rem; color: var(--fg-40); line-height: 1.8; max-width: 300px; }
+    .footer-col h4 {
+      font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem;
+      color: var(--fg-70);
+    }
+    .footer-col a, .footer-col span {
+      display: block; font-size: 0.82rem; color: var(--fg-35);
+      margin-bottom: 0.5rem; transition: color 0.3s;
+    }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 3rem auto 0;
+      padding-top: 1.5rem; border-top: 1px solid var(--fg-06);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-bottom-links { display: flex; gap: 1.5rem; }
+    .footer-bottom-links a {
+      font-size: 0.8rem; color: var(--fg-35); transition: color 0.3s;
+    }
+    .footer-bottom-links a:hover { color: var(--white); }
+    .footer-bottom span { font-size: 0.72rem; color: var(--fg-25); }
+
+    /* ===================== LIGHTBOX ===================== */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,0.92); backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center;
+      cursor: zoom-out;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox img, .lightbox video {
+      max-width: 90vw; max-height: 85vh; border-radius: 12px;
+      object-fit: contain; cursor: default;
+    }
+    .lightbox-close {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); border: none;
+      color: var(--white); font-size: 1.5rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ===================== ANIMATIONS ===================== */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal.d1 { transition-delay: 0.1s; }
+    .reveal.d2 { transition-delay: 0.2s; }
+    .reveal.d3 { transition-delay: 0.3s; }
+    .reveal.d4 { transition-delay: 0.4s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    /* ===================== RESPONSIVE ===================== */
+    @media (max-width: 900px) {
+      .categories-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-split { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: repeat(2, 1fr); }
+      .video-grid { grid-template-columns: 1fr; }
+      .footer-content { grid-template-columns: 1fr; }
+      .resume-grid { grid-template-columns: 1fr; }
+      .portfolio-cta-card { flex-direction: column; text-align: center; padding: 2.5rem 2rem; }
+      .portfolio-cta-info p { max-width: 100%; }
+    }
+    @media (max-width: 600px) {
+      .categories-grid { grid-template-columns: 1fr; }
+      .nav-center { display: none; }
+      .float-card { width: 160px; height: 200px; }
+      .recent-card { min-width: 260px; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+
+  <!-- Loader -->
+  <div class="loader">
+    <div class="loader-text">XIA<span class="g">F</span>ENG</div>
+    <div class="loader-bar"></div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-logo"><img src="assets/logo.png" alt="夏峰" style="height:32px; width:auto; object-fit:contain"></div>
+    <div class="nav-center">
+      <a href="#hero">首页</a>
+      <a href="#works">作品</a>
+      <a href="https://www.zcool.com.cn/u/15416013?p=1#tab_anchor" target="_blank" rel="noopener">作品集</a>
+    </div>
+    <button class="nav-explore" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">联系我</button>
+  </nav>
+
+  <!-- Hero Carousel -->
+  <section id="hero" class="hero-carousel">
+    <div class="hero-slides">
+      <!-- Slide 1: Uploaded image -->
+      <div class="hero-slide active" style="background:var(--black)">
+        <div class="hero-slide-bg" style="background-image:url('assets/images/hero-image.jpg')"></div>
+        <div class="hero-slide-content">
+          <h1 class="hero-title">W<span class="g">O</span>RK<br><span class="p">®</span> NOW</h1>
+          <div class="hero-subtitle">
+            视觉设计师 · 创意探索者
+            <span class="tagline">用设计连接品牌与用户的情感纽带</span>
+          </div>
+        </div>
+        <div class="hero-slide-label">CREATIVE VISUAL DESIGN</div>
+      </div>
+      <!-- Slide 2: Video 1 -->
+      <div class="hero-slide" style="background:var(--black)">
+        <video class="hero-slide-video" autoplay muted loop playsinline preload="metadata"><source src="assets/videos/hero-video-1.mp4" type="video/mp4"></video>
+        <div class="hero-slide-content">
+          <h1 class="hero-title">CR<span class="g">E</span>ATIV<span class="p">E</span></h1>
+          <div class="hero-subtitle">
+            AI 时代下的视觉表达
+            <span class="tagline">技术赋能与创意融合的探索实践</span>
+          </div>
+        </div>
+        <div class="hero-slide-label">AI × DESIGN EXPLORATION</div>
+      </div>
+      <!-- Slide 3: Video 2 -->
+      <div class="hero-slide" style="background:var(--black)">
+        <video class="hero-slide-video" autoplay muted loop playsinline preload="metadata"><source src="assets/videos/hero-video-2.mp4" type="video/mp4"></video>
+        <div class="hero-slide-content">
+          <h1 class="hero-title">D<span class="g">E</span>SIGN<br>FUTUR<span class="p">E</span></h1>
+          <div class="hero-subtitle">
+            从概念到落地的全链路设计
+            <span class="tagline">品牌视觉 · 产品广告 · CGI渲染 · AI生成</span>
+          </div>
+        </div>
+        <div class="hero-slide-label">FULL STACK DESIGN SERVICE</div>
+      </div>
+      <!-- Slide 4: Video 3 -->
+      <div class="hero-slide" style="background:var(--black)">
+        <video class="hero-slide-video" autoplay muted loop playsinline preload="metadata"><source src="assets/videos/hero-video-3.mp4" type="video/mp4"></video>
+        <div class="hero-slide-content">
+          <h1 class="hero-title" style="font-size:clamp(2.5rem,7vw,5.5rem)">ST<span class="p">O</span>P<br><span style="color:var(--white)">JUST D</span><span class="g">O</span> IT<br>F<span class="g">O</span>R FUTUR<span class="p">E</span></h1>
+          <div class="hero-subtitle">
+            <span class="tagline">不停探索，只为更好的视觉表达</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-arrow prev" aria-label="上一张">‹</button>
+    <button class="carousel-arrow next" aria-label="下一张">›</button>
+    <div class="carousel-dots"></div>
+  </section>
+
+  <!-- Creative Work - Floating Cards -->
+  <section class="creative-section" data-component="creative-gallery">
+    <div class="creative-title reveal">
+      <h2>
+        <span class="l1">C</span><span class="l2">R</span><span class="l3">E</span><span class="l4">A</span><span class="l5">T</span><span class="l6">I</span><span class="l7">V</span><span class="l8">E</span>&nbsp;
+        <span class="l9">W</span><span class="l10">O</span><span class="l1">R</span><span class="l2">K</span><span class="l3">S</span>
+      </h2>
+    </div>
+    <p class="creative-subtitle reveal d1">一些有趣的创意化内容探索</p>
+    <button class="creative-view-more reveal d2" onclick="document.getElementById('works').scrollIntoView({behavior:'smooth'})">查看更多 →</button>
+    <div class="floating-cards reveal d3">
+      <div class="float-card" style="transform:rotate(-6deg) translateY(10px)">
+        <img src="assets/images/ip/2016387553699172352.jpeg" alt="IP Design" loading="lazy">
+        <div class="float-card-info"><h4>品牌IP设计</h4><span>IP及场景</span></div>
+      </div>
+      <div class="float-card" style="transform:rotate(4deg) translateY(-15px)">
+        <img src="assets/images/creative/2012056410506006528.png" alt="Creative" loading="lazy">
+        <div class="float-card-info"><h4>产品创意视觉</h4><span>创意视觉</span></div>
+      </div>
+      <div class="float-card" style="transform:rotate(-3deg) translateY(20px)">
+        <img src="assets/images/composition/ChatGPT Image 2026年6月22日 18_00_15.png" alt="Composition" loading="lazy">
+        <div class="float-card-info"><h4>MCHOIX 视觉构成</h4><span>构成设计</span></div>
+      </div>
+      <div class="float-card" style="transform:rotate(5deg) translateY(-8px)">
+        <img src="assets/images/work/ChatGPT Image 2026年6月22日 18_16_35.png" alt="Work" loading="lazy">
+        <div class="float-card-info"><h4>AirPods 产品设计</h4><span>工作项目</span></div>
+      </div>
+      <div class="float-card" style="transform:rotate(-4deg) translateY(12px)">
+        <img src="assets/images/motion/ChatGPT Image 2026年6月22日 18_10_34.png" alt="Motion" loading="lazy">
+        <div class="float-card-info"><h4>动态技术可视化</h4><span>动态视觉</span></div>
+      </div>
+      <div class="float-card" style="transform:rotate(3deg) translateY(-18px)">
+        <img src="assets/images/beyond/ChatGPT Image 2026年6月22日 18_04_11.png" alt="Beyond" loading="lazy">
+        <div class="float-card-info"><h4>产品营销设计</h4><span>设计之外</span></div>
+      </div>
+      <div class="float-card" style="transform:rotate(-5deg) translateY(6px)">
+        <img src="assets/images/ip/ChatGPT Image 2026年6月22日 18_09_45.png" alt="IP" loading="lazy">
+        <div class="float-card-info"><h4>IP形象系统</h4><span>IP及场景</span></div>
+      </div>
+      <div class="float-card" style="transform:rotate(6deg) translateY(-12px)">
+        <img src="assets/images/creative/2012061814204010496.png" alt="CGI" loading="lazy">
+        <div class="float-card-info"><h4>CGI 创意渲染</h4><span>创意视觉</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Works -->
+  <section id="works" class="recent-section" data-component="recent-works">
+    <div class="recent-header reveal">
+      <h2>R<span class="grn">E</span>CENT W<span class="grn">O</span>RKS</h2>
+      <div class="tagline-text">HEY CR<span class="pk">E</span>ATIVE DESIGN JUST F<span class="pk">O</span>R @FUTURE</div>
+    </div>
+    <div class="recent-scroll">
+      <div class="recent-card reveal d1">
+        <img src="assets/images/ip/2016387553699172352.jpeg" alt="OPPO Watch" loading="lazy">
+        <div class="recent-card-body">
+          <span class="card-cat cat-pink">IP及场景</span>
+          <h4>OPPO Watch 2 · 时尚科技</h4>
+          <p>品牌科技产品的视觉呈现，融合时尚与科技元素</p>
+        </div>
+      </div>
+      <div class="recent-card reveal d2">
+        <img src="assets/images/creative/2012056410506006528.png" alt="Creative Visual" loading="lazy">
+        <div class="recent-card-body">
+          <span class="card-cat cat-lime">创意视觉</span>
+          <h4>果本 · 夜间保湿精华</h4>
+          <p>护肤品 CGI 创意渲染，高品质产品视觉</p>
+        </div>
+      </div>
+      <div class="recent-card reveal d3">
+        <img src="assets/images/composition/ChatGPT Image 2026年6月22日 18_00_15.png" alt="MCHOIX" loading="lazy">
+        <div class="recent-card-body">
+          <span class="card-cat cat-purple">构成设计</span>
+          <h4>MCHOIX · 植萃润护系列</h4>
+          <p>极简形态下的点线面与多元视觉研究</p>
+        </div>
+      </div>
+      <div class="recent-card reveal d4">
+        <img src="assets/images/work/ChatGPT Image 2026年6月22日 18_16_35.png" alt="AirPods" loading="lazy">
+        <div class="recent-card-body">
+          <span class="card-cat cat-cyan">工作项目</span>
+          <h4>复古游戏手柄 · AirPods保护壳</h4>
+          <p>2019-2026 设计工作轨迹</p>
+        </div>
+      </div>
+      <div class="recent-card reveal d1">
+        <img src="assets/images/motion/ChatGPT Image 2026年6月22日 18_10_34.png" alt="Drone" loading="lazy">
+        <div class="recent-card-body">
+          <span class="card-cat cat-yellow">动态视觉</span>
+          <h4>核心动力系统 · 技术可视化</h4>
+          <p>AI时代下的动态视觉探索</p>
+        </div>
+      </div>
+      <div class="recent-card reveal d2">
+        <img src="assets/images/beyond/ChatGPT Image 2026年6月22日 18_04_11.png" alt="Beyond" loading="lazy">
+        <div class="recent-card-body">
+          <span class="card-cat cat-green">设计之外</span>
+          <h4>多功能骑乘挖掘机 · 产品营销</h4>
+          <p>记录设计之外的观察与AI技术探索</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Grid -->
+  <section class="categories-section" data-component="categories">
+    <div class="categories-title reveal">
+      <h2>
+        <span class="l1">C</span><span class="l2">R</span><span class="l3">EATIVE</span>&nbsp;
+        <span class="l4">W</span><span class="l5">O</span><span class="l3">RK</span>
+      </h2>
+    </div>
+    <p class="categories-sub reveal d1">一些有趣的创意化内容探索</p>
+    <div class="categories-grid">
+      <!-- 创意视觉 -->
+      <div class="cat-card reveal d1">
+        <div class="cat-card-icon" style="background:rgba(174,255,98,0.12); color:var(--lime)">✦</div>
+        <h3>创意视觉</h3>
+        <p>AI 时代下技术赋能与视觉表达的融合实践探索</p>
+        <div class="cat-card-preview"><img src="assets/images/creative/2012061814204010496.png" alt="Creative" loading="lazy"></div>
+        <div class="cat-card-link" style="color:var(--lime)">查看作品 →</div>
+      </div>
+      <!-- 构成设计 -->
+      <div class="cat-card reveal d2">
+        <div class="cat-card-icon" style="background:rgba(185,142,255,0.12); color:var(--purple)">◆</div>
+        <h3>构成设计</h3>
+        <p>极简形态下的点线面与多元视觉的研究</p>
+        <div class="cat-card-preview"><img src="assets/images/composition/ChatGPT Image 2026年6月22日 18_00_28.png" alt="Composition" loading="lazy"></div>
+        <div class="cat-card-link" style="color:var(--purple)">查看作品 →</div>
+      </div>
+      <!-- IP及场景 -->
+      <div class="cat-card reveal d3">
+        <div class="cat-card-icon" style="background:rgba(102,221,255,0.12); color:var(--cyan)">◎</div>
+        <h3>IP及场景</h3>
+        <p>一些IP孵化的设计和场景的探究与融合</p>
+        <div class="cat-card-preview"><img src="assets/images/ip/ChatGPT Image 2026年6月22日 18_09_45.png" alt="IP" loading="lazy"></div>
+        <div class="cat-card-link" style="color:var(--cyan)">查看作品 →</div>
+      </div>
+      <!-- 工作项目 -->
+      <div class="cat-card reveal d1">
+        <div class="cat-card-icon" style="background:rgba(255,184,223,0.12); color:var(--pink)">▣</div>
+        <h3>工作项目</h3>
+        <p>2019-2026 设计工作轨迹，走过一些弯路依旧保持passion</p>
+        <div class="cat-card-preview"><img src="assets/images/work/ChatGPT Image 2026年6月22日 18_16_35.png" alt="Work" loading="lazy"></div>
+        <div class="cat-card-link" style="color:var(--pink)">查看作品 →</div>
+      </div>
+      <!-- 动态视觉 -->
+      <div class="cat-card reveal d2">
+        <div class="cat-card-icon" style="background:rgba(255,232,120,0.12); color:var(--yellow)">▶</div>
+        <h3>动态视觉</h3>
+        <p>AI时代下的各类动态视觉的探索</p>
+        <div class="cat-card-preview"><img src="assets/images/motion/ChatGPT Image 2026年6月22日 18_10_34.png" alt="Motion" loading="lazy"></div>
+        <div class="cat-card-link" style="color:var(--yellow)">查看作品 →</div>
+      </div>
+      <!-- 设计之外 -->
+      <div class="cat-card reveal d3">
+        <div class="cat-card-icon" style="background:rgba(185,142,255,0.12); color:var(--purple)">✿</div>
+        <h3>设计之外</h3>
+        <p>记录设计之外的观察、新时代AI技术探索</p>
+        <div class="cat-card-preview"><img src="assets/images/beyond/ChatGPT Image 2026年6月22日 18_04_11.png" alt="Beyond" loading="lazy"></div>
+        <div class="cat-card-link" style="color:var(--purple)">查看作品 →</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About / Designer Section -->
+  <section class="about-section" data-component="about">
+    <div class="about-container">
+      <p class="about-intro reveal">
+        我是夏峰，一位视觉设计师。这里是一处仍在生长中的实验现场——让技术成为放大想象力的引擎，而不是替代判断与感受力的答案。我更关心 AI 如何参与创作、触发偏离、制造新秩序。
+      </p>
+      <div class="about-split">
+        <div class="about-image reveal d1">
+          <img src="assets/images/creative/2012056410506006528.png" alt="Design Work">
+        </div>
+        <div class="about-image reveal d2">
+          <img src="assets/images/ip/2016387553699172352.jpeg" alt="IP Design">
+        </div>
+      </div>
+      <div style="text-align:center; margin-bottom:3rem">
+        <div class="about-designer-label reveal">
+          D<span class="e">E</span>SIGN<span class="e">E</span>R W<span class="e">O</span>RDS.
+        </div>
+      </div>
+      <div class="about-stats-row reveal d1">
+        <div class="about-stat"><div class="num" style="color:var(--pink)">11+</div><div class="lbl">年设计经验</div></div>
+        <div class="about-stat"><div class="num" style="color:var(--lime)">180+</div><div class="lbl">作品产出</div></div>
+        <div class="about-stat"><div class="num" style="color:var(--cyan)">6</div><div class="lbl">设计方向</div></div>
+        <div class="about-stat"><div class="num" style="color:var(--purple)">AI</div><div class="lbl">创意探索中</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section class="skills-section" data-component="skills">
+    <div class="skills-container">
+      <div class="skills-grid">
+        <div class="skill-item reveal d1"><div class="icon" style="color:var(--pink)">◈</div><h4>品牌视觉系统</h4><p>从Logo到完整品牌手册，构建有辨识度的视觉识别体系</p></div>
+        <div class="skill-item reveal d2"><div class="icon" style="color:var(--lime)">◉</div><h4>产品广告创意</h4><p>消费电子、美妆、母婴等品类的高品质广告视觉</p></div>
+        <div class="skill-item reveal d3"><div class="icon" style="color:var(--cyan)">◇</div><h4>CGI产品渲染</h4><p>三维技术呈现产品细节与材质质感</p></div>
+        <div class="skill-item reveal d4"><div class="icon" style="color:var(--purple)">◆</div><h4>AI视觉生成</h4><p>生成式技术加速创意迭代，概念到成品的高效转化</p></div>
+        <div class="skill-item reveal d1"><div class="icon" style="color:var(--yellow)">▶</div><h4>动态与视频</h4><p>品牌短片、产品演示与动态图形设计</p></div>
+        <div class="skill-item reveal d2"><div class="icon" style="color:var(--green)">✦</div><h4>数字体验设计</h4><p>网站、小程序与数字触点的视觉体验</p></div>
+        <div class="skill-item reveal d3"><div class="icon" style="color:var(--orange)">◎</div><h4>摄影后期</h4><p>商业摄影的色彩管理与视觉氛围营造</p></div>
+        <div class="skill-item reveal d4"><div class="icon" style="color:var(--red)">▣</div><h4>三维建模</h4><p>产品建模、场景构建与材质渲染</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Section -->
+  <section class="video-section" data-component="video">
+    <div class="video-container">
+      <div class="video-header reveal">
+        <h2>动态创意 · 视觉叙事</h2>
+      </div>
+      <div class="video-grid">
+        <div class="video-card reveal d1">
+          <video controls preload="metadata" playsinline><source src="assets/videos/2043227787434790912.mp4" type="video/mp4"></video>
+          <div class="video-card-info"><h4>创意动态短片 I</h4><span>品牌视频 · 2025</span></div>
+        </div>
+        <div class="video-card reveal d2">
+          <video controls preload="metadata" playsinline><source src="assets/videos/微信视频2026-06-22_191046_023.mp4" type="video/mp4"></video>
+          <div class="video-card-info"><h4>创意动态短片 II</h4><span>产品展示 · 2025</span></div>
+        </div>
+        <div class="video-card reveal d3">
+          <video controls preload="metadata" playsinline><source src="assets/videos/微信视频2026-06-22_191054_783.mp4" type="video/mp4"></video>
+          <div class="video-card-info"><h4>创意动态短片 III</h4><span>视觉实验 · 2025</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio CTA -->
+  <section class="portfolio-cta" data-component="portfolio-cta">
+    <a href="https://www.zcool.com.cn/u/15416013?p=1#tab_anchor" target="_blank" rel="noopener" class="portfolio-cta-card reveal">
+      <div class="portfolio-cta-info">
+        <h3>P<span class="pk">O</span>RTF<span class="lm">O</span>LIO · 完整作品集</h3>
+        <p>浏览站酷主页上的全部设计作品，涵盖品牌视觉、产品广告、CGI渲染、AI创意生成等多个方向的完整项目案例。</p>
+      </div>
+      <div class="portfolio-cta-btn">
+        查看作品集
+        <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+    </a>
+  </section>
+
+  <!-- CTA Bold -->
+  <section class="cta-section" data-component="cta">
+    <div class="reveal">
+      <h2>
+        <span class="line">ST<span class="p">O</span>P</span>
+        <span class="line">JUST D<span class="g">O</span> IT</span>
+        <span class="line">F<span class="g">O</span>R FUTUR<span class="p">E</span></span>
+      </h2>
+    </div>
+  </section>
+
+  <!-- Resume -->
+  <section class="resume-section" data-component="resume">
+    <div class="resume-container">
+      <div class="resume-grid">
+        <div class="resume-info reveal">
+          <h3>视觉设计师</h3>
+          <p>拥有11年以上视觉设计经验，专注于品牌视觉、产品广告与创意技术领域。曾服务于多家知名品牌与设计机构，主导完成从品牌策略到视觉落地的全流程项目。</p>
+          <p>近年积极探索AI辅助设计的新可能，将前沿技术融入创意流程。</p>
+          <div class="skill-tags">
+            <span class="skill-tag">品牌设计</span><span class="skill-tag">广告创意</span>
+            <span class="skill-tag">CGI渲染</span><span class="skill-tag">AI生成</span>
+            <span class="skill-tag">动态设计</span><span class="skill-tag">UI/UX</span>
+            <span class="skill-tag">摄影后期</span><span class="skill-tag">三维建模</span>
+          </div>
+          <a href="assets/个人简历-夏峰.pdf" download class="resume-download">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            下载完整简历
+          </a>
+        </div>
+        <div class="reveal d2" style="display:flex;flex-direction:column;gap:1rem">
+          <div style="border-radius:20px;overflow:hidden;aspect-ratio:3/2">
+            <img src="assets/images/work/ChatGPT Image 2026年6月22日 18_16_35.png" alt="Portfolio" style="width:100%;height:100%;object-fit:cover">
+          </div>
+          <div style="display:flex;gap:1rem">
+            <div style="border-radius:16px;overflow:hidden;flex:1;aspect-ratio:1">
+              <img src="assets/images/composition/ChatGPT Image 2026年6月22日 18_00_15.png" alt="" style="width:100%;height:100%;object-fit:cover">
+            </div>
+            <div style="border-radius:16px;overflow:hidden;flex:1;aspect-ratio:1">
+              <img src="assets/images/ip/ChatGPT Image 2026年6月22日 18_09_45.png" alt="" style="width:100%;height:100%;object-fit:cover">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <section id="contact" class="footer-section" data-component="footer">
+    <div class="footer-bg-image" style="background-image:url('assets/images/creative/2012061814204010496.png')"></div>
+    <div class="footer-content">
+      <div class="footer-brand reveal">
+        <div class="logo-text"><img src="assets/logo.png" alt="夏峰" style="height:28px; width:auto; object-fit:contain"> 夏峰 · 视觉设计</div>
+        <p>浪潮中思考与判断力愈发不可替代，无比的想象力和执行力才是AI时代的人的核心。用设计连接品牌与用户，用创意讲述视觉故事。</p>
+      </div>
+      <div class="footer-col reveal d1">
+        <h4>社媒主页</h4>
+        <a href="https://www.zcool.com.cn/u/15416013?p=1#tab_anchor" target="_blank" rel="noopener">作品集: 站酷主页 →</a>
+        <span>Design: 暂无</span>
+        <span>微博 / 抖音: 暂无</span>
+      </div>
+      <div class="footer-col reveal d2">
+        <h4>联系我</h4>
+        <a href="mailto:291125983@qq.com">邮箱: 291125983@qq.com</a>
+        <span>微信: xiafeng9412</span>
+        <span>合作咨询: 欢迎通过邮箱或者社媒联系</span>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 夏峰 · 创意化探索</span>
+      <div class="footer-bottom-links">
+        <a href="https://www.zcool.com.cn/u/15416013?p=1#tab_anchor" target="_blank" rel="noopener">站酷</a>
+        <a href="https://www.behance.net" target="_blank" rel="noopener">Behance</a>
+        <a href="https://www.xiaohongshu.com" target="_blank" rel="noopener">小红书</a>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox">
+    <button class="lightbox-close">&times;</button>
+  </div>
+
+  <script>
+    /* ========== Loader ========== */
+    window.addEventListener('load', () => {
+      setTimeout(() => document.querySelector('.loader')?.classList.add('hidden'), 2000);
+    });
+
+    /* ========== Hero Carousel ========== */
+    (() => {
+      const slides = document.querySelectorAll('.hero-slide');
+      const dotsContainer = document.querySelector('.carousel-dots');
+      const prevBtn = document.querySelector('.carousel-arrow.prev');
+      const nextBtn = document.querySelector('.carousel-arrow.next');
+      const slidesContainer = document.querySelector('.hero-slides');
+      let current = 0;
+      let timer;
+
+      // Create dots
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+      });
+      const dots = dotsContainer.querySelectorAll('.carousel-dot');
+
+      function goTo(index) {
+        // Pause video on outgoing slide
+        const outVideo = slides[current].querySelector('.hero-slide-video');
+        if (outVideo) { outVideo.pause(); }
+
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = (index + slides.length) % slides.length;
+        slidesContainer.style.transform = `translateX(-${current * 100}%)`;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+
+        // Play video on incoming slide
+        const inVideo = slides[current].querySelector('.hero-slide-video');
+        if (inVideo) { inVideo.currentTime = 0; inVideo.play().catch(() => {}); }
+
+        resetTimer();
+      }
+
+      prevBtn?.addEventListener('click', () => goTo(current - 1));
+      nextBtn?.addEventListener('click', () => goTo(current + 1));
+
+      function resetTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => goTo(current + 1), 5000);
+      }
+      resetTimer();
+    })();
+
+    /* ========== Reveal on scroll ========== */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ========== Lightbox ========== */
+    const lightbox = document.querySelector('.lightbox');
+    const lbClose = document.querySelector('.lightbox-close');
+    let lbMedia = null;
+
+    function openLightbox(src, isVideo) {
+      if (lbMedia) lbMedia.remove();
+      if (isVideo) {
+        lbMedia = document.createElement('video');
+        lbMedia.src = src; lbMedia.controls = true; lbMedia.autoplay = true;
+        lbMedia.style.cssText = 'max-width:90vw;max-height:85vh;border-radius:12px';
+      } else {
+        lbMedia = document.createElement('img');
+        lbMedia.src = src;
+        lbMedia.style.cssText = 'max-width:90vw;max-height:85vh;border-radius:12px;object-fit:contain';
+      }
+      lightbox.appendChild(lbMedia);
+      lightbox.classList.add('active');
+    }
+
+    lightbox?.addEventListener('click', (e) => {
+      if (e.target === lightbox || e.target === lbClose) {
+        lightbox.classList.remove('active');
+        if (lbMedia) { lbMedia.remove(); lbMedia = null; }
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        lightbox.classList.remove('active');
+        if (lbMedia) { lbMedia.remove(); lbMedia = null; }
+      }
+    });
+
+    // Attach lightbox to portfolio images and cards
+    document.querySelectorAll('.float-card img, .recent-card img, .cat-card-preview img').forEach(img => {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', () => openLightbox(img.src, false));
+    });
+
+    /* ========== Nav scroll ========== */
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('.nav');
+      if (window.scrollY > 60) {
+        nav.style.background = 'rgba(0,0,0,0.85)';
+      } else {
+        nav.style.background = 'rgba(0,0,0,0.5)';
+      }
+    }, { passive: true });
+
+    /* ========== Smooth scroll for nav links ========== */
+    document.querySelectorAll('.nav-center a').forEach(a => {
+      a.addEventListener('click', (e) => {
+        const href = a.getAttribute('href');
+        if (href.startsWith('#')) {
+          e.preventDefault();
+          document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    /* ========== Keyboard carousel ========== */
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') document.querySelector('.carousel-arrow.prev')?.click();
+      if (e.key === 'ArrowRight') document.querySelector('.carousel-arrow.next')?.click();
+    });
+
+    /* ========== Float card subtle parallax ========== */
+    document.querySelectorAll('.float-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.zIndex = '10';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.zIndex = '';
+      });
+    });
+  </script>
+</body>
+</html>
