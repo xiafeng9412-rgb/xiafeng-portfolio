@@ -552,7 +552,68 @@
       background: rgba(255,255,255,0.1); border: none;
       color: var(--white); font-size: 1.5rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
+      z-index: 10;
     }
+    .lightbox-topbar {
+      position: absolute; top: 1.5rem; left: 1.5rem; right: 5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 10; pointer-events: none;
+    }
+    .lightbox-counter {
+      font-size: 0.85rem; color: rgba(255,255,255,0.6);
+      background: rgba(0,0,0,0.4); padding: 0.4rem 0.9rem;
+      border-radius: 100px; pointer-events: auto;
+    }
+    .lightbox-actions { display: flex; gap: 0.5rem; pointer-events: auto; }
+    .lightbox-action-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); border: none;
+      color: var(--white); font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.3s;
+    }
+    .lightbox-action-btn:hover { background: rgba(255,255,255,0.2); }
+    .lightbox-zoom-controls {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(0,0,0,0.5); padding: 0.4rem 0.8rem;
+      border-radius: 100px; z-index: 10;
+    }
+    .lightbox-zoom-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); border: none;
+      color: var(--white); font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lightbox-zoom-btn:hover { background: rgba(255,255,255,0.25); }
+    .lightbox-zoom-level {
+      font-size: 0.75rem; color: rgba(255,255,255,0.6);
+      min-width: 40px; text-align: center;
+    }
+    .lightbox-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 48px; height: 48px; border-radius: 50%;
+      background: rgba(255,255,255,0.08); border: none;
+      color: var(--white); font-size: 1.5rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10; transition: background 0.3s, transform 0.2s;
+    }
+    .lightbox-nav:hover { background: rgba(255,255,255,0.2); transform: translateY(-50%) scale(1.1); }
+    .lightbox-nav.prev { left: 1.5rem; }
+    .lightbox-nav.next { right: 1.5rem; }
+    .lightbox-media-wrapper {
+      width: 100%; height: 100%; display: flex;
+      align-items: center; justify-content: center; overflow: hidden;
+    }
+    .lightbox-media-wrapper img, .lightbox-media-wrapper video {
+      max-width: 90vw; max-height: 85vh; border-radius: 12px;
+      object-fit: contain; cursor: default;
+      transition: transform 0.2s ease; user-select: none;
+    }
+    .lightbox-media-wrapper img.zoomed {
+      cursor: grab; max-width: none; max-height: none;
+    }
+    .lightbox-media-wrapper img.panning { cursor: grabbing; transition: none; }
 
     /* ===================== ANIMATIONS ===================== */
     .reveal {
@@ -587,6 +648,108 @@
       .float-card { width: 160px; height: 200px; }
       .recent-card { min-width: 260px; }
       .skills-grid { grid-template-columns: 1fr 1fr; }
+      .showcase-gallery { columns: 1; }
+      .showcase-cross-grid { grid-template-columns: repeat(2, 1fr); }
+      .showcase-header-inner { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .lightbox-nav { width: 36px; height: 36px; font-size: 1.2rem; }
+      .lightbox-nav.prev { left: 0.5rem; }
+      .lightbox-nav.next { right: 0.5rem; }
+    }
+
+    /* ===================== SHOWCASE ===================== */
+    .showcase {
+      position: fixed; inset: 0; z-index: 5000;
+      background: var(--black); overflow-y: auto;
+    }
+    .showcase-header {
+      padding: 6rem 2rem 3rem;
+      background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, transparent 100%);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .showcase-header-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem;
+    }
+    .showcase-back-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--fg-60); font-size: 0.85rem; font-weight: 500;
+      cursor: pointer; transition: color 0.3s;
+      background: none; border: none; padding: 0.5rem 0;
+      flex-shrink: 0;
+    }
+    .showcase-back-btn:hover { color: var(--white); }
+    .showcase-back-btn svg {
+      width: 20px; height: 20px; fill: none;
+      stroke: currentColor; stroke-width: 2;
+    }
+    .showcase-info h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .showcase-info p {
+      font-size: 0.9rem; color: var(--fg-50); max-width: 500px;
+      line-height: 1.7;
+    }
+    .showcase-meta {
+      display: flex; align-items: center; gap: 1rem;
+      margin-top: 0.8rem; font-size: 0.78rem; color: var(--fg-35);
+    }
+    .showcase-meta-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--fg-20);
+    }
+    .showcase-gallery {
+      max-width: 1200px; margin: 0 auto;
+      padding: 2rem; columns: 3; column-gap: 1rem;
+    }
+    .showcase-item {
+      break-inside: avoid; margin-bottom: 1rem;
+      border-radius: 16px; overflow: hidden;
+      cursor: zoom-in; transition: transform 0.3s var(--ease-spring);
+    }
+    .showcase-item:hover { transform: scale(1.02); }
+    .showcase-item img {
+      width: 100%; display: block;
+    }
+    .showcase-cross-nav {
+      max-width: 1200px; margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+    .showcase-cross-nav h3 {
+      font-family: var(--font-display); font-size: 1.3rem;
+      font-weight: 700; margin-bottom: 1.5rem; color: var(--fg-60);
+    }
+    .showcase-cross-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem;
+    }
+    .showcase-cross-card {
+      background: var(--card-alt); border-radius: 16px;
+      overflow: hidden; cursor: pointer;
+      border: 1px solid var(--fg-05);
+      transition: border-color 0.3s, transform 0.3s var(--ease-spring);
+      text-decoration: none; color: inherit; display: block;
+    }
+    .showcase-cross-card:hover {
+      border-color: var(--fg-12); transform: translateY(-4px);
+    }
+    .showcase-cross-card-img {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+    }
+    .showcase-cross-card-body { padding: 0.8rem 1rem; }
+    .showcase-cross-card-body h4 {
+      font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem;
+    }
+    .showcase-cross-card-body span {
+      font-size: 0.72rem; color: var(--fg-35);
+    }
+    @media (max-width: 1024px) {
+      .showcase-gallery { columns: 2; }
+      .showcase-cross-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .showcase-cross-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -780,7 +943,7 @@
     <p class="categories-sub reveal d1">一些有趣的创意化内容探索</p>
     <div class="categories-grid">
       <!-- 创意视觉 -->
-      <div class="cat-card reveal d1">
+      <div class="cat-card reveal d1" data-category="creative">
         <div class="cat-card-icon" style="background:rgba(174,255,98,0.12); color:var(--lime)">✦</div>
         <h3>创意视觉</h3>
         <p>AI 时代下技术赋能与视觉表达的融合实践探索</p>
@@ -788,7 +951,7 @@
         <div class="cat-card-link" style="color:var(--lime)">查看作品 →</div>
       </div>
       <!-- 构成设计 -->
-      <div class="cat-card reveal d2">
+      <div class="cat-card reveal d2" data-category="composition">
         <div class="cat-card-icon" style="background:rgba(185,142,255,0.12); color:var(--purple)">◆</div>
         <h3>构成设计</h3>
         <p>极简形态下的点线面与多元视觉的研究</p>
@@ -796,7 +959,7 @@
         <div class="cat-card-link" style="color:var(--purple)">查看作品 →</div>
       </div>
       <!-- IP及场景 -->
-      <div class="cat-card reveal d3">
+      <div class="cat-card reveal d3" data-category="ip">
         <div class="cat-card-icon" style="background:rgba(102,221,255,0.12); color:var(--cyan)">◎</div>
         <h3>IP及场景</h3>
         <p>一些IP孵化的设计和场景的探究与融合</p>
@@ -804,7 +967,7 @@
         <div class="cat-card-link" style="color:var(--cyan)">查看作品 →</div>
       </div>
       <!-- 工作项目 -->
-      <div class="cat-card reveal d1">
+      <div class="cat-card reveal d1" data-category="work">
         <div class="cat-card-icon" style="background:rgba(255,184,223,0.12); color:var(--pink)">▣</div>
         <h3>工作项目</h3>
         <p>2019-2026 设计工作轨迹，走过一些弯路依旧保持passion</p>
@@ -812,7 +975,7 @@
         <div class="cat-card-link" style="color:var(--pink)">查看作品 →</div>
       </div>
       <!-- 动态视觉 -->
-      <div class="cat-card reveal d2">
+      <div class="cat-card reveal d2" data-category="motion">
         <div class="cat-card-icon" style="background:rgba(255,232,120,0.12); color:var(--yellow)">▶</div>
         <h3>动态视觉</h3>
         <p>AI时代下的各类动态视觉的探索</p>
@@ -820,7 +983,7 @@
         <div class="cat-card-link" style="color:var(--yellow)">查看作品 →</div>
       </div>
       <!-- 设计之外 -->
-      <div class="cat-card reveal d3">
+      <div class="cat-card reveal d3" data-category="beyond">
         <div class="cat-card-icon" style="background:rgba(185,142,255,0.12); color:var(--purple)">✿</div>
         <h3>设计之外</h3>
         <p>记录设计之外的观察、新时代AI技术探索</p>
@@ -991,9 +1154,26 @@
 
   </main>
 
+  <!-- Showcase Gallery (dynamically rendered) -->
+  <div id="showcase-container" class="showcase" style="display:none"></div>
+
   <!-- Lightbox -->
-  <div class="lightbox">
-    <button class="lightbox-close">&times;</button>
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close">&times;</button>
+    <div class="lightbox-topbar">
+      <span class="lightbox-counter" id="lightbox-counter"></span>
+      <div class="lightbox-actions">
+        <button class="lightbox-action-btn" id="lightbox-zoom-btn" title="缩放">+</button>
+      </div>
+    </div>
+    <button class="lightbox-nav prev" id="lightbox-prev">‹</button>
+    <button class="lightbox-nav next" id="lightbox-next">›</button>
+    <div class="lightbox-media-wrapper" id="lightbox-wrapper"></div>
+    <div class="lightbox-zoom-controls">
+      <button class="lightbox-zoom-btn" id="zoom-out-btn">−</button>
+      <span class="lightbox-zoom-level" id="zoom-level">100%</span>
+      <button class="lightbox-zoom-btn" id="zoom-in-btn">+</button>
+    </div>
   </div>
 
   <script>
@@ -1061,49 +1241,310 @@
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    /* ========== Lightbox ========== */
-    const lightbox = document.querySelector('.lightbox');
-    const lbClose = document.querySelector('.lightbox-close');
-    let lbMedia = null;
-
-    function openLightbox(src, isVideo) {
-      if (lbMedia) lbMedia.remove();
-      if (isVideo) {
-        lbMedia = document.createElement('video');
-        lbMedia.src = src; lbMedia.controls = true; lbMedia.autoplay = true;
-        lbMedia.style.cssText = 'max-width:90vw;max-height:85vh;border-radius:12px';
-      } else {
-        lbMedia = document.createElement('img');
-        lbMedia.src = src;
-        lbMedia.style.cssText = 'max-width:90vw;max-height:85vh;border-radius:12px;object-fit:contain';
+    /* ========== Showcase Gallery System ========== */
+    const showcaseCategories = {
+      'creative': {
+        name: '创意视觉', desc: 'AI 时代下技术赋能与视觉表达的融合实践探索',
+        accent: '#AEFF62', icon: '✦', folder: 'creative',
+        images: ["2012056410506006528.png","2012058118963466240.png","2012059496922353664.png","2012061814204010496.png","2012066429502885888.png","2016344508328972288.png","2016344847476199424.png","2016348783180386304.png","2016357342509142016.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_02_29.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_04_01.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_04_07.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_06_58.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_07_04.png","jimeng-2025-12-23-6495-\u6de1\u7d2b\u8272\u7684MENGPEI\u54c1\u724c\u5145\u7535\u5b9d\uff0c\u6d41\u7ebf\u578b\u9020\u578b\u8f6e\u5ed3\uff0c\u89e6\u6478\u611f\u8d28\u611f\uff0c\u8868\u9762\u7684\u5149\u6ed1\u6750\u8d28\u3001\u7ec6.png","jimeng-2025-12-23-9251-\u5728\u6781\u7b80\u4e3b\u4e49\u7684\u8bbe\u8ba1\u4e2d\uff0c3\u4e2a\u8ff7\u4f60\u84dd\u7259\u8033\u673a\u91c7\u7528\u673a\u8eab\u4eae\u5149\u6750\u8d28\uff0c\u767d\u8272\uff0c\u6de1\u9752\u8272\uff0c\u6d45\u7c89\u8272\uff0c\u6574\u9f50.png","jimeng-2026-01-15-5582-\u4e1d\u7f51\u5370\u6d77\u62a5\uff0c\u4fdd\u7559\u4e1d\u7f51\u5370\u8d28\u611f\u548c\u7279\u70b9\uff0c\u534a\u8c03\u56fe\u6848\uff0c\u566a\u70b9\u98a0\u7c92\uff0c\u7ebf\u6761\u7b80\u6d01\u7075\u52a8\uff0c\u753b\u9762\u6709\u6545\u4e8b\u611f.png","jimeng-2026-01-28-2946-\u9ad8\u8d28\u611f\u5546\u4e1a\u9759\u7269\u6444\u5f71\uff0c\u7eaf\u767d\u80cc\u666f\uff0c\u7279\u5199\u89c6\u89d2\u3002\u4e1d\u6ed1\u7684\u91d1\u8272\u6db2\u4f53\u5448\u52a8\u6001\u6d41\u52a8\u5f62\u6001\uff0c\u672b\u7aef\u60ac\u5782\u4e00.png","jimeng-2026-01-28-3749-\u957f\u65b9\u5f62\u70d8\u7119\u4ea7\u54c1\u6d77\u62a5\u8bbe\u8ba1\uff0c\u6d45\u7070\u8272\u80cc\u666f\uff0c\u4e2d\u592e\u653e\u7f6e\u91d1\u9ec4\u9165\u8106\u7684\u725b\u89d2\u5305\u7279\u5199\uff0c\u8868\u9762\u6709\u6e05\u6670\u5206\u5c42.png"]
+      },
+      'composition': {
+        name: '构成设计', desc: '极简形态下的点线面与多元视觉的研究',
+        accent: '#B98EFF', icon: '◆', folder: 'composition',
+        images: ["ChatGPT Image 2026\u5e746\u670822\u65e5 18_00_15.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_00_28.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_00_39.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_00_43.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_00_47.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_00_50.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_00_53.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_01_01.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_01_59.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_02_47.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_03_37.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_07_33.png","jimeng-2026-01-16-5219-CGI \u6570\u5b57\u827a\u672f\u4f5c\u54c1\uff0c\u62bd\u8c61\u3001\u591a\u5f69\u3001\u52a8\u6001\u7acb\u4f53\u56fe\u5f62\uff0c\u534a\u900f\u660e\u8584\u819c\u6750\u8d28\uff0c\u8584\u819c\u5c42\u53e0\u6d41\u52a8\u5982\u51e4.png"]
+      },
+      'ip': {
+        name: 'IP及场景', desc: '一些IP孵化的设计和场景的探究与融合',
+        accent: '#66DDFF', icon: '◎', folder: 'ip',
+        images: ["2016387553699172352.jpeg","ChatGPT Image 2026\u5e746\u670822\u65e5 18_09_45.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_09_49.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_09_51.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_09_54.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_09_56.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_09_58.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_10_01.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_10_03.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_10_05.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_10_07.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_11_06.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_12_41.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_12_47.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_13_28.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_13_31.png","jimeng-2025-12-29-1986-\u4e3a\u9910\u996e\u54c1\u724c \u201cBobble\u201d \u8bbe\u8ba1\u5168\u5957\u54c1\u724c\u89c6\u89c9\u8bc6\u522b\u7cfb\u7edf\uff0c\u5305\u542b\u624b\u63d0\u888b\u3001\u4fe1\u5c01\u3001\u7eb8\u676f\u3001.png","jimeng-2025-12-29-4991-\u4e3a\u9910\u996e\u54c1\u724c \u201cBobble\u201d \u8bbe\u8ba1\u5168\u5957\u54c1\u724c\u89c6\u89c9\u8bc6\u522b\u7cfb\u7edf\uff0c\u5305\u542b\u624b\u63d0\u888b\u3001\u4fe1\u5c01\u3001\u7eb8\u676f\u3001.png","jimeng-2025-12-29-7548-\u4e3a\u9910\u996e\u54c1\u724c \u201cBobble\u201d \u8bbe\u8ba1\u5168\u5957\u54c1\u724c\u89c6\u89c9\u8bc6\u522b\u7cfb\u7edf\uff0c\u5305\u542b\u624b\u63d0\u888b\u3001\u4fe1\u5c01\u3001\u7eb8\u676f\u3001.png","jimeng-2025-12-29-9033-\u4e3a\u9910\u996e\u54c1\u724c \u201cBobble\u201d \u8bbe\u8ba1\u5168\u5957\u54c1\u724c\u89c6\u89c9\u8bc6\u522b\u7cfb\u7edf\uff0c\u5305\u542b\u624b\u63d0\u888b\u3001\u4fe1\u5c01\u3001\u7eb8\u676f\u3001.png","jimeng-2026-01-13-2491-\u4e3b\u4f53\u662f\u5361\u901a\u718a\u7684\u89d2\u8272\u8bbe\u8ba1\u7a3f\uff0c\u5305\u542b\u6b63\u89c6\u56fe\u3001\u4fa7\u89c6\u56fe\u4e0e\u540e\u89c6\u56fe\uff0c\u4ee5\u7ea2\u84dd\u8f85\u52a9\u7ebf\uff08\u5706\u5f62\u3001\u692d\u5706\u3001.png","jimeng-2026-01-13-6816-\u98ce\u683c\uff1a\u6f6e\u6d41\u6d3b\u52a8\u5ba3\u4f20\u6d77\u62a5\u8bbe\u8ba1\uff0c\u91c7\u7528\u649e\u8272\u6d82\u9e26\u98ce\u683c\uff0c\u5de6\u53f3\u53cc\u56fe\u5bf9\u79f0\u6784\u56fe\uff0c\u89c6\u89c9\u51b2\u51fb\u529b\u5f3a\uff0c\u5951.png","jimeng-2026-01-13-7980-\u4e3b\u4f53\u662f\u5361\u901a\u718a\u7684\u89d2\u8272\u8bbe\u8ba1\u7a3f\uff0c\u5305\u542b\u6b63\u89c6\u56fe\u3001\u4fa7\u89c6\u56fe\u4e0e\u540e\u89c6\u56fe\uff0c\u4ee5\u7ea2\u84dd\u8f85\u52a9\u7ebf\uff08\u5706\u5f62\u3001\u692d\u5706\u3001.png"]
+      },
+      'work': {
+        name: '工作项目', desc: '2019-2026 设计工作轨迹，走过一些弯路依旧保持passion',
+        accent: '#FFB8DF', icon: '▣', folder: 'work',
+        images: ["ChatGPT Image 2026\u5e746\u670822\u65e5 18_16_35.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_16_46.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_18_56.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_18_58.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_20_03.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_20_16.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_20_20.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_20_23.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_20_27.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_20_29.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_20_34.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_20_37.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_20_54.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_20_58.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_21_18.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_21_57.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_22_01.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_22_08.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_23_29.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_23_31.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_24_19.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_24_41.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_26_30.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_28_17.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_31_20.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_31_24.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_32_51.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_32_53.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_32_56.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_32_58.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_33_47.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_33_50.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_39_55.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_40_14.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_40_26.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_45_37.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_46_56.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_47_10.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_48_01.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_48_04.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_48_06.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_50_34.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_50_48.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_52_59.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_53_03.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_53_05.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_53_09.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_53_12.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_53_13.png","image8.png"]
+      },
+      'motion': {
+        name: '动态视觉', desc: 'AI时代下的各类动态视觉的探索',
+        accent: '#FFE878', icon: '▶', folder: 'motion',
+        images: ["ChatGPT Image 2026\u5e746\u670822\u65e5 18_10_34.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_10_59.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_13_14.png"]
+      },
+      'beyond': {
+        name: '设计之外', desc: '记录设计之外的观察、新时代AI技术探索',
+        accent: '#B98EFF', icon: '✿', folder: 'beyond',
+        images: ["ChatGPT Image 2026\u5e746\u670822\u65e5 18_04_11.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_05_46.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_05_49.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_05_52.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_05_54.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_05_56.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_05_59.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_06_01.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_07_36.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_07_45.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_08_24.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_13_23.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_13_26.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_18_04.png","ChatGPT Image 2026\u5e746\u670822\u65e5 18_18_07.png","jimeng-2025-10-16-3606-\u6807\u9898\u5b57\u4f53\u8bbe\u8ba1\uff0c\u6587\u5b57\u201c\u81ea\u5728\u53bb\u91ce\uff0c\u6f6e\u5411\u8fdc\u65b9\u201d\u6781\u5177\u4e2a\u6027\u548c\u8857\u5934\u611f\u7684\u6d82\u9e26\u5b57\u4f53\uff0c\u5145\u6ee1\u529b\u5ea6\u4e0e\u4e0d.png","jimeng-2025-11-27-6763-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u4e00\u4e2a\u5b8c\u6574\u7684\u84dd\u8272\u6d77\u6d6a\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u6d77\u6d6a\u6750\u8d28\u7684\u201c\u4e09\u4e9a\u8eba\u5e73\u8ba1.png","jimeng-2025-11-28-1171-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u5927\u8349\u539f\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u201c\u9003\u79bb\u57ce\u5e02\u8ba1\u5212\u201d\u6587\u5b57\u8bbe\u8ba1\uff0c\u5c0f.png","jimeng-2025-11-28-1232-\u9ed1\u5e95\u767d\u5b57\uff0c\u5546\u6807\u5b57\u4f53\u8bbe\u8ba1\uff0c\u6587\u5b57\u201c\u4e1c\u65b9\u4e4b\u97f5\u201d\uff0c\u5b57\u4f53\u7ecf\u8fc7\u72ec\u7279\u8bbe\u8ba1\uff0c\u7b14\u753b\u5f62\u6001\u522b\u81f4\uff0c\u96b6\u4e66\u611f.png","jimeng-2025-11-28-1510-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u533b\u9662\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u5361\u901a\u5927\u5b57\u201c\u68a6\u55b5\u5b89\u5fc3\u8ba1\u5212 \u7edd\u80b2.png","jimeng-2025-11-28-1717-\u9ed1\u8272\u80cc\u666f\u767d\u8272\u5b57\u4f53\uff0c\u201c\u5954\u5411\u5143\u5b87\u5b99\u201d\uff0c\u6545\u969c\u98ce\u5b57\u4f53\uff0c\u5b57\u4f53\u6709\u91cd\u53e0\u7684\u84dd\u8272\u548c\u7d2b\u8272\uff0c\u8d5b\u535a\u670b\u514b\u98ce.png","jimeng-2025-11-28-1792-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u6d6a\u82b1\uff0c\u91d1\u8272\u7ec6\u8fb9\u6846\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u4eac\u90fd\u98ce\u5473\u8bd7\u201d (1).png","jimeng-2025-11-28-1917-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u4e00\u4e2a\u5b8c\u6574\u7684\u5f62\u72b6\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u201c\u79bb\u5929\u5802\u6700\u8fd1\u7684\u5730\u65b9\u201d.png","jimeng-2025-11-28-1945-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u6cf3\u6c60\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\u3002\u5de6\u4fa7\u662f\u8d28\u611f\u5361\u901a\u5927\u5b57\u201c\u840c\u5ba0\u6e38\u6cf3\u7545\u73a9\u5957\u9910\u201d.png","jimeng-2025-11-28-2046-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u6728\u724c\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u706b\u7130\u8d28\u611f\u201c\u70e4\u9c7c\u72c2\u6b22\u5b63 \u70ed\u8fa3\u6c5f\u6e56.png","jimeng-2025-11-28-2058-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u897f\u53cc\u7248\u7eb3\u96e8\u6797\u3002\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u6811\u6728\u6750\u8d28\u7684\u201c\u96e8\u6797\u5947\u9047\u8bb0.png","jimeng-2025-11-28-2060-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u8349\u5730\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\u3002\u5de6\u4fa7\u662f\u8d28\u611f\u5361\u901a\u5927\u5b57\u201c\u5ba0\u7269\u4e13\u5c5e\u7535\u5f71\u7ea7\u5199\u771f.png","jimeng-2025-11-28-2118-\u9ed1\u5e95\u767d\u5b57\uff0c\u751f\u6210\u201c\u6697\u9ed1\u72c2\u6218\u201d\u56db\u4e2a\u5b57\uff0c\u5e73\u9762\u5b57\u4f53\uff0c\u5b57\u4f53\u8981\u6709\u529b\u91cf\u611f\uff0c\u7b14\u950b\u660e\u663e\uff0c\u8981\u5145\u6ee1\u79d1\u6280.png","jimeng-2025-11-28-2248-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u6c99\u6f20\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u201c\u91cd\u542f\u4e1d\u7ef8\u4e4b\u8def\u201d\u6587\u5b57\u8bbe\u8ba1\uff0c\u5c0f\u5b57.png","jimeng-2025-11-28-2375-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u533b\u9662\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\u3002\u5de6\u4fa7\u662f\u8d28\u611f\u5361\u901a\u5927\u5b57\u201c\u55b5\u754c\u76fe\u724c\u8ba1\u5212 \u75ab\u82d7.png","jimeng-2025-11-28-2386-\u9ed1\u5e95\u767d\u5b57\uff0c\u5976\u6cb9\u8d28\u611f\u7684\u6587\u5b57\uff0c\u6587\u5b57\u201c\u6ce1\u6ce1\u7cd6\u201d\uff0c\u53ef\u7231\u5361\u901a\u98ce\u683c\u5b57\u4f53\uff0c\u7b14\u753b\u5706\u6da6\u9971\u6ee1\uff0c\u8fb9\u7f18\u5e26.png","jimeng-2025-11-28-2761-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u5730\u6bef\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\u3002\u5de6\u4fa7\u662f\u5730\u6bef\u8d28\u611f\u5361\u901a\u5927\u5b57\u201c\u68a6\u68a6\u6e38\u4e50\u56ed \u5ba0.png","jimeng-2025-11-28-2911-\u9ed1\u5e95\u767d\u5b57\uff0c\u5b57\u4f53\u8bbe\u8ba1\u201c\u7384\u7470\u7684\u6545\u4e8b\u201d\uff0c\u5e72\u51c0\u80cc\u666f\uff0c\u82b1\u4f53\u5b57\u98ce\uff0c\u7ea4\u7ec6\u7684\u7b14\u753b\uff0c\u7b14\u753b\u62c9\u4e1d\uff0c\u7075\u52a8.png","jimeng-2025-11-28-3186-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u706b\u9505\u6c64\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u201c\u6cb8\u817e\u5c40\u00b7\u5f53\u7ea2\u9505\u7269\u72c2\u6b22\u201d\u6587\u5b57.png","jimeng-2025-11-28-3300-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u87c3\u87f9\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u87f9\u5929\u87f9\u5730\uff0c\u4e00\u7172\u6cb8\u817e\uff01\u201d\u6587 (1).png","jimeng-2025-11-28-3377-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u87c3\u87f9\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u87f9\u5929\u87f9\u5730\uff0c\u4e00\u7172\u6cb8\u817e\uff01\u201d\u6587.png","jimeng-2025-11-28-4277-\u9ed1\u8272\u80cc\u666f\uff0c\u7efc\u827a\u4f53\u6587\u5b57\u201c\u8da3\u91ce\u201d\uff0c\u5b57\u4f53\u8bbe\u8ba1\uff0c\u7b14\u753b\u4e00\u5934\u7c97\u4e00\u5934\u7a84\uff0c\u521b\u610f\u624b\u7ed8\u5b57\uff0c\u5a31\u4e50\u8282\u76ee\u8c03.png","jimeng-2025-11-28-4600-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u6d6a\u82b1\uff0c\u91d1\u8272\u7ec6\u8fb9\u6846\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u4eac\u90fd\u98ce\u5473\u8bd7\u201d.png","jimeng-2025-11-28-5008-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u6ce1\u6cab\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u68a6\u68a6SPA\u5b66\u9662 \u6d17\u62a4.png","jimeng-2025-11-28-5441-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u6728\u724c\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u706b\u7130\u8d28\u611f\u201c\u70e4\u9c7c\u72c2\u6b22\u5b63 \u70ed\u8fa3\u6c5f\u6e56.png","jimeng-2025-11-28-6280-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u725b\u8089\u5e72\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\u3002\u5de6\u4fa7\u662f\u8d28\u611f\u5361\u901a\u5927\u5b57\u201c\u771f\u8089\u9c9c\u9999 \u98df\u529b\u89c9.png","jimeng-2025-11-28-6377-\u6587\u5b57\u201c\u55e8\u7206\u5168\u573a \u51b3\u6218\u53cc\u5341\u4e00\u201d\u5b57\u4f53\u91c7\u7528\u9510\u5229\u7684\u3001\u73b0\u4ee3\u611f\u5341\u8db3\u7684\u4e2d\u6587\u4e66\u6cd5\u98ce\u683c\uff0c\u950b\u5229\u7684\u89d2\u5ea6.png","jimeng-2025-11-28-6621-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u8349\u5730\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u8f7b\u98df\u5524\u9192\u8ba1\u5212\u201d\u6587\u5b57\u8bbe\u8ba1\uff0c.png","jimeng-2025-11-28-6628-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u8fde\u7ef5\u7684\u957f\u767d\u5c71\u5c71\u5cf0\uff0c\u7eaf\u9ed1\u80cc\u666f\u3002\u5de6\u4fa7\u662f\u51b0\u96ea\u6750\u8d28\u7684\u201c\u51ac\u65e5\u7ae5.png","jimeng-2025-11-28-6687-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u52a8\u611f\u9020\u578b\u9ed1\u68d5\u8272\u900f\u660e\u80f6\u5377\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u94f6\u5e55\u5947.png","jimeng-2025-11-28-6871-\u521b\u610f\u5b57\u4f53\u8bbe\u8ba1\uff0c\u7ebf\u6761\u6d41\u7545\u4e14\u5bcc\u6709\u827a\u672f\u611f\uff0c\u4e2d\u6587\u201c11.png","jimeng-2025-11-28-7124-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u767d\u8272\u5c0f\u732b\u6bdb\u7ed2\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u523a\u7ee3\u8d28\u611f\u201c\u5cf0\u529b\u5145\u503c\u8ba1\u5212\u201d.png","jimeng-2025-11-28-7438-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u6df1\u8272\u77f3\u5934\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u77f3\u5934\u8d28\u611f\u201c\u5bc6\u5ba4\u9003\u751f\u8231 \u9650\u65f6\u5f00.png","jimeng-2025-11-28-7500-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9aa8\u5934\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\u3002\u5de6\u4fa7\u662f\u8d28\u611f\u5361\u901a\u5927\u5b57\u201c\u771f\u8089\u9c9c\u9999 \u98df\u529b\u89c9\u9192.png","jimeng-2025-11-28-7824-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u6728\u8d28\u6258\u76d8\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u706b\u7130\u8d28\u611f\u201c\u7206\u6c41\u548c\u725b\uff0c\u653e\u8086\u5f00\u70e4.png","jimeng-2025-11-28-7932-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u4e3a\u9ebb\u5c06\u684c\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u724c\u5c40\u4f1a\u6240 \u96c0\u795e\u72c2\u6b22\u591c\u201d.png","jimeng-2025-11-28-8347-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u4e3a\u6e38\u620f\u5730\u56fe\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u5e01\u4e0d\u53ef\u5c11 \u73a9\u529b\u89c9\u9192\u8ba1.png","jimeng-2025-11-28-8359-\u9ed1\u5e95\u767d\u5b57\uff0c\u4e2d\u6587\u5b57\u4f53\u201c\u51ac\u65e5\u6696\u9633\u201d\u3002\u5927\u80c6\u827a\u672f\u7684\u4e2d\u6587\u5b57\u4f53\u8bbe\u8ba1\uff0c\u626d\u66f2\u4e14\u91cd\u53e0\u7684\u5b57\u7b26\uff0c\u52a8\u6001\u4e0d.png","jimeng-2025-11-28-8377-\u79d1\u5e7b\u98ce\u683c\u5b57\u4f53\u6587\u5b57\u5185\u5bb9\u4e3a\u201c\u7535\u5b50\u805a\u60e0 \u5168\u573a\u8d85\u4f4e\u6298\u6263\u201d\u5b57\u4f53\u989c\u8272\u4e3a\u94f6\u7070\u8272\uff0c\u6a21\u62df\u91d1\u5c5e\u6750\u8d28\uff0c.png","jimeng-2025-11-28-8497-\u827a\u672f\u5b57\u8bbe\u8ba1\uff0c\u6587\u5b57\u201c\u6e29\u6696\u4ef7\u5230 \u51b0\u70b9\u72c2\u6b22\u201d\uff0c\u5b57\u4f53\u98ce\u683c\u4e3a\u51b7\u5cfb\u68f1\u89d2\u7acb\u4f53\u8d28\u611f\uff0c\u7b14\u753b\u5143\u7d20\u5d4c\u5165.png","jimeng-2025-11-28-8583-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u6728\u8d28\u6258\u76d8\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u706b\u7130\u8d28\u611f\u201c\u7206\u6c41\u548c\u725b\uff0c\u653e\u8086\u5f00\u70e4.png","jimeng-2025-11-28-8738-\u9ed1\u5e95\u767d\u5b57\uff0c\u4e2d\u6587\u5b57\u4f53\u201c\u5357\u57ce\u65e7\u4e8b\u201d\uff0c\u590d\u53e4\u4e0e\u73b0\u4ee3\u7ed3\u5408\u98ce\u683c\uff0c\u539a\u91cd\u4e2d\u5bab\u6536\u7d27\u8bbe\u8ba1\uff0c\u5938\u5f20\u7684\u7b14\u753b.png","jimeng-2025-11-28-8742-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u829d\u58eb\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u7126\u7cd6\u8d28\u611f\u201c\u62c9\u4e1d\u7814\u7a76\u6240\u00b7\u829d\u58eb\u66b4\u51fb.png","jimeng-2025-11-28-8851-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u7af9\u7f16\u7c38\u7b95\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u4e91\u5473\u79d8\u5883 \u5c71\u91ce\u98ce\u7269\u5bb4.png","jimeng-2025-11-28-8972-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u6bdb\u7ed2\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\u3002\u5de6\u4fa7\u8d28\u611f\u201c\u840c\u5ba0\u53d8\u5f62\u8ba1 \u9ad8\u5b9a\u989c\u503c\u6539\u9020\u5c40\u201d.png","jimeng-2025-11-28-9198-\u9ed1\u5e95\u767d\u5b57\uff0c\u6253\u5b57\u673a\u5b57\u4f53\uff0c\u7c97\u98a0\u7c92\u611f\uff0c\u4e0d\u89c4\u5219\u58a8\u8ff9\uff0c\u590d\u53e4\u8001\u5f0f\u5370\u5237\uff0c\u7565\u6709\u7f3a\u635f\uff0c\u5185\u5bb9\u662f\u201c\u6591\u9a73.png","jimeng-2025-11-28-9397-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u4e3a\u7535\u7ade\u952e\u76d8\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u7535\u7ade\u71c3\u6599\u8231 \u6bb5\u4f4d\u52a0\u901f.png","jimeng-2025-11-28-9406-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u706b\u7130\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u70e7\u70e4\u72c2\u6b22\u5b63 \u70df\u706b\u6c5f\u6e56\uff0c\u201c.png","jimeng-2025-11-28-9453-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u4e3a\u79ef\u6728\u9020\u578b\uff0c\u7eaf\u9ed1\u80cc\u666f\uff0c\u5de6\u4fa7\u662f\u8d28\u611f\u201c\u7ae5\u8bdd\u65cb\u8f6c\u65e5\u8bb0\u6728\u9a6c\u5947\u9047\u5b63\u201d.png","jimeng-2025-11-28-9986-\u6a2a\u6761\u5f02\u5f62\u5361\u7247\u8bbe\u8ba1\uff0c\u6574\u4f53\u9020\u578b\u4e3a\u897f\u5b89\u53e4\u57ce\u7684\u6837\u5b50\uff0c\u7eaf\u9ed1\u80cc\u666f\u3002\u5de6\u4fa7\u662f\u201c\u7a7f\u8d8a\u5343\u5e74\u957f\u5b89\u201d\u6587\u5b57.png","jimeng-2025-12-03-6619-\u521b\u610f\u5b57\u4f53\u8bbe\u8ba1\u201c\u653e\u8f7b\u677e \u522b\u7126\u8651\u201d\u53ca\u82f1\u6587\u201cTAKE IT EASY DON\u2019T WO.png","jimeng-2025-12-23-2138-\u4e00\u4e2a\u7d22\u5c3c\u8033\u673a\u4ea7\u54c1\u7535\u5546\u8bbe\u8ba1\uff0c\u9ad8\u7ea7\u611f\uff0c\u6df1\u8272\uff0c\u6c1b\u56f4\u5149\u7167\uff0c\u4fa7\u5149\uff0c\u5e73\u89c6\u89c6\u89d2\uff0c\u4e2d\u5fc3\u6784\u56fe\uff0c\u91d1\u5c5e.png","jimeng-2025-12-23-2163-\u4e00\u4e2a\u7d22\u5c3c\u8033\u673a\u4ea7\u54c1\u7535\u5546\u8bbe\u8ba1\uff0c\u9ad8\u7ea7\u611f\uff0c\u6df1\u8272\uff0c\u6c1b\u56f4\u5149\u7167\uff0c\u4fa7\u5149\uff0c\u5e73\u89c6\u89c6\u89d2\uff0c\u4e2d\u5fc3\u6784\u56fe\uff0c\u91d1\u5c5e.png","jimeng-2025-12-23-9353-\u5728\u6781\u7b80\u4e3b\u4e49\u7684\u8bbe\u8ba1\u4e2d\uff0c3\u4e2a\u8ff7\u4f60\u84dd\u7259\u8033\u673a\u91c7\u7528\u673a\u8eab\u54d1\u5149\u6750\u8d28\uff0c\u6de1\u7d2b\u8272\uff0c\u6de1\u84dd\u8272\uff0c\u6de1\u7eff\u8272\uff0c\u6574.png","jimeng-2026-01-16-5578-\u8d85\u5199\u5b9e3D\u5bb6\u7535\u4ea7\u54c1\u6e32\u67d3\u9762\u5305\u673a\u5c55\u793a\uff0c\u4e3b\u6253\u6696\u68d5\u4e0e\u6696\u6a59\u91d1\u8272\u7cfb\u3002\u673a\u8eab\u91c7\u7528\u53ef\u900f\u89c6\u7684\u73bb\u7483\u6750\u8d28.png","jimeng-2026-01-16-5710-\u5236\u4f5c\u8fd9\u4e2a\u5496\u5561\u673a\u7684\u7535\u5546\u4e3b\u56fe\uff0c\u628a\u5b83\u653e\u5728\u6781\u7b80\u4e3b\u4e49\u98ce\u683c\u53a8\u623f\uff0c\u80cc\u666f\u5899\u6295\u5c04\u51fa\u767e\u53f6\u7a97\u7684\u5149\u5f71\u6761\u7eb9.png","jimeng-2026-03-24-1771-\u4e3b\u4f53\u4e3a \u201c\u82b1\u6d77\u679c\u9152\u201d \u5e7f\u544a\u521b\u610f\uff0c\u4ee5\u82b1\u6d77\u4e0e\u82b1\u4e1b\u5f62\u6210\u679c\u9152\u74f6\u8f6e\u5ed3\u7684\u8d1f\u7a7a\u95f4\uff0c\u5185\u90e8\u5c55\u73b0\u82b1\u6d77.png","jimeng-2026-04-20-6093-3D\u7acb\u4f53\u5b57\u8bbe\u8ba1\uff0c\u4e3b\u6807\u9898\u201cDream\u201d\u7acb\u4f53\u6ce1\u6ce1\u5b57\u4f53\uff0c\u8f6f\u8fb9\u7f18\uff0c\u5b57\u4f53\u91c7\u7528\u7c89\u5f69\u68c9\u82b1\u7cd6\u6750\u8d28.png"]
       }
-      lightbox.appendChild(lbMedia);
+    };
+
+    const catOrder = ['creative','composition','ip','work','motion','beyond'];
+    const showcaseEl = document.getElementById('showcase-container');
+    let currentShowcase = null;
+    let lbGallery = [];
+    let lbIndex = 0;
+    let lbZoom = 1;
+    let lbPanX = 0, lbPanY = 0;
+    let lbIsPanning = false;
+    let lbStartX = 0, lbStartY = 0;
+    let lbMediaEl = null;
+
+    function getBasePath() {
+      var p = window.location.pathname;
+      return p.substring(0, p.lastIndexOf('/') + 1);
+    }
+
+    function getImageUrl(category, filename) {
+      return getBasePath() + 'assets/images/' + category + '/' + encodeURI(filename);
+    }
+
+    /* ========== Hash Router ========== */
+    function handleRoute() {
+      var hash = window.location.hash;
+      if (hash.startsWith('#showcase/')) {
+        var catId = hash.replace('#showcase/', '');
+        if (showcaseCategories[catId]) {
+          currentShowcase = catId;
+          renderShowcase(catId);
+        }
+      } else {
+        currentShowcase = null;
+        showcaseEl.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    }
+    window.addEventListener('hashchange', handleRoute);
+
+    function renderShowcase(catId) {
+      var cat = showcaseCategories[catId];
+      if (!cat) return;
+      document.body.style.overflow = 'hidden';
+      showcaseEl.style.display = 'block';
+      showcaseEl.style.setProperty('--cat-accent', cat.accent);
+      showcaseEl.scrollTop = 0;
+
+      var otherCats = catOrder.filter(function(id) { return id !== catId; });
+      var crossNavHtml = otherCats.map(function(id) {
+        var c = showcaseCategories[id];
+        var thumbUrl = getImageUrl(c.folder, c.images[0]);
+        return '<div class="showcase-cross-card" onclick="window.location.hash=\'showcase/' + id + '\'">' +
+          '<img class="showcase-cross-card-img" src="' + thumbUrl + '" alt="' + c.name + '" loading="lazy">' +
+          '<div class="showcase-cross-card-body"><h4>' + c.name + '</h4><span>' + c.images.length + ' \u4ef6\u4f5c\u54c1</span></div></div>';
+      }).join('');
+
+      var galleryHtml = cat.images.map(function(filename, i) {
+        var url = getImageUrl(cat.folder, filename);
+        return '<div class="showcase-item" data-index="' + i + '">' +
+          '<img src="' + url + '" alt="' + cat.name + '" loading="lazy"></div>';
+      }).join('');
+
+      showcaseEl.innerHTML =
+        '<div class="showcase-header"><div class="showcase-header-inner">' +
+        '<button class="showcase-back-btn" onclick="window.location.hash=\'\'">' +
+        '<svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '\u8fd4\u56de\u9996\u9875</button>' +
+        '<div class="showcase-info"><h1 style="color:' + cat.accent + '">' + cat.name + '</h1>' +
+        '<p>' + cat.desc + '</p>' +
+        '<div class="showcase-meta"><span>' + cat.images.length + ' \u4ef6\u4f5c\u54c1</span>' +
+        '<div class="showcase-meta-dot"></div><span>' + cat.icon + '</span></div></div>' +
+        '</div></div>' +
+        '<div class="showcase-gallery">' + galleryHtml + '</div>' +
+        '<div class="showcase-cross-nav"><h3>\u63a2\u7d22\u66f4\u591a\u4f5c\u54c1\u5206\u7c7b</h3>' +
+        '<div class="showcase-cross-grid">' + crossNavHtml + '</div></div>';
+
+      showcaseEl.querySelectorAll('.showcase-item').forEach(function(item) {
+        item.addEventListener('click', function() {
+          openShowcaseLightbox(catId, parseInt(item.dataset.index));
+        });
+      });
+    }
+
+    /* ========== Enhanced Lightbox ========== */
+    var lightbox = document.getElementById('lightbox');
+    var lbWrapper = document.getElementById('lightbox-wrapper');
+    var lbCounter = document.getElementById('lightbox-counter');
+    var lbCloseBtn = document.getElementById('lightbox-close');
+    var lbPrevBtn = document.getElementById('lightbox-prev');
+    var lbNextBtn = document.getElementById('lightbox-next');
+    var lbZoomInBtn = document.getElementById('zoom-in-btn');
+    var lbZoomOutBtn = document.getElementById('zoom-out-btn');
+    var lbZoomLevel = document.getElementById('zoom-level');
+    var lbTopZoomBtn = document.getElementById('lightbox-zoom-btn');
+
+    function openShowcaseLightbox(catId, index) {
+      var cat = showcaseCategories[catId];
+      if (!cat) return;
+      lbGallery = cat.images.map(function(f) { return getImageUrl(cat.folder, f); });
+      lbIndex = index;
+      showLightboxImage();
       lightbox.classList.add('active');
     }
 
-    lightbox?.addEventListener('click', (e) => {
-      if (e.target === lightbox || e.target === lbClose) {
-        lightbox.classList.remove('active');
-        if (lbMedia) { lbMedia.remove(); lbMedia = null; }
+    function openLightbox(src, isVideo) {
+      lbGallery = [];
+      lbIndex = 0;
+      showSingleMedia(src, isVideo);
+      lightbox.classList.add('active');
+    }
+
+    function showSingleMedia(src, isVideo) {
+      lbWrapper.innerHTML = '';
+      resetZoom();
+      if (isVideo) {
+        lbMediaEl = document.createElement('video');
+        lbMediaEl.src = src; lbMediaEl.controls = true; lbMediaEl.autoplay = true;
+      } else {
+        lbMediaEl = document.createElement('img');
+        lbMediaEl.src = src;
+      }
+      lbWrapper.appendChild(lbMediaEl);
+      lbCounter.textContent = '';
+      lbPrevBtn.style.display = 'none';
+      lbNextBtn.style.display = 'none';
+      document.querySelector('.lightbox-zoom-controls').style.display = isVideo ? 'none' : 'flex';
+    }
+
+    function showLightboxImage() {
+      lbWrapper.innerHTML = '';
+      resetZoom();
+      lbMediaEl = document.createElement('img');
+      lbMediaEl.src = lbGallery[lbIndex];
+      lbMediaEl.draggable = false;
+      lbWrapper.appendChild(lbMediaEl);
+      lbCounter.textContent = (lbIndex + 1) + ' / ' + lbGallery.length;
+      lbPrevBtn.style.display = lbGallery.length > 1 ? 'flex' : 'none';
+      lbNextBtn.style.display = lbGallery.length > 1 ? 'flex' : 'none';
+      document.querySelector('.lightbox-zoom-controls').style.display = 'flex';
+    }
+
+    function resetZoom() {
+      lbZoom = 1; lbPanX = 0; lbPanY = 0;
+      updateLbTransform();
+    }
+
+    function updateLbTransform() {
+      if (!lbMediaEl) return;
+      lbMediaEl.style.transform = 'scale(' + lbZoom + ') translate(' + (lbPanX / lbZoom) + 'px, ' + (lbPanY / lbZoom) + 'px)';
+      lbZoomLevel.textContent = Math.round(lbZoom * 100) + '%';
+      if (lbZoom > 1) {
+        lbMediaEl.classList.add('zoomed');
+      } else {
+        lbMediaEl.classList.remove('zoomed');
+        lbMediaEl.classList.remove('panning');
+      }
+    }
+
+    function setZoom(val) {
+      lbZoom = Math.max(0.5, Math.min(5, val));
+      if (lbZoom <= 1) { lbPanX = 0; lbPanY = 0; }
+      updateLbTransform();
+    }
+
+    /* Lightbox Events */
+    lbCloseBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      lightbox.classList.remove('active');
+      lbWrapper.innerHTML = '';
+    });
+
+    lightbox.addEventListener('click', function(e) {
+      if (e.target === lightbox || e.target === lbWrapper) {
+        if (lbZoom <= 1) {
+          lightbox.classList.remove('active');
+          lbWrapper.innerHTML = '';
+        }
       }
     });
 
-    document.addEventListener('keydown', (e) => {
+    lbPrevBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (lbGallery.length === 0) return;
+      lbIndex = (lbIndex - 1 + lbGallery.length) % lbGallery.length;
+      showLightboxImage();
+    });
+
+    lbNextBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (lbGallery.length === 0) return;
+      lbIndex = (lbIndex + 1) % lbGallery.length;
+      showLightboxImage();
+    });
+
+    lbZoomInBtn.addEventListener('click', function(e) { e.stopPropagation(); setZoom(lbZoom + 0.5); });
+    lbZoomOutBtn.addEventListener('click', function(e) { e.stopPropagation(); setZoom(lbZoom - 0.5); });
+    lbTopZoomBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (lbZoom > 1) { setZoom(1); } else { setZoom(2); }
+    });
+
+    lbWrapper.addEventListener('wheel', function(e) {
+      if (!lbMediaEl || lbMediaEl.tagName === 'VIDEO') return;
+      e.preventDefault();
+      setZoom(lbZoom + (e.deltaY > 0 ? -0.15 : 0.15));
+    }, { passive: false });
+
+    lbWrapper.addEventListener('mousedown', function(e) {
+      if (!lbMediaEl || lbZoom <= 1 || e.button !== 0) return;
+      lbIsPanning = true;
+      lbStartX = e.clientX - lbPanX;
+      lbStartY = e.clientY - lbPanY;
+      lbMediaEl.classList.add('panning');
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function(e) {
+      if (!lbIsPanning) return;
+      lbPanX = e.clientX - lbStartX;
+      lbPanY = e.clientY - lbStartY;
+      updateLbTransform();
+    });
+
+    document.addEventListener('mouseup', function() {
+      if (lbIsPanning && lbMediaEl) { lbMediaEl.classList.remove('panning'); }
+      lbIsPanning = false;
+    });
+
+    lbWrapper.addEventListener('dblclick', function(e) {
+      if (!lbMediaEl || lbMediaEl.tagName === 'VIDEO') return;
+      e.stopPropagation();
+      if (lbZoom > 1) { setZoom(1); } else { setZoom(2.5); }
+    });
+
+    /* Global Keyboard */
+    document.addEventListener('keydown', function(e) {
+      if (!lightbox.classList.contains('active')) return;
       if (e.key === 'Escape') {
         lightbox.classList.remove('active');
-        if (lbMedia) { lbMedia.remove(); lbMedia = null; }
+        lbWrapper.innerHTML = '';
+      }
+      if (lbGallery.length > 1) {
+        if (e.key === 'ArrowLeft') {
+          lbIndex = (lbIndex - 1 + lbGallery.length) % lbGallery.length;
+          showLightboxImage();
+        }
+        if (e.key === 'ArrowRight') {
+          lbIndex = (lbIndex + 1) % lbGallery.length;
+          showLightboxImage();
+        }
       }
     });
 
-    // Attach lightbox to portfolio images and cards
-    document.querySelectorAll('.float-card img, .recent-card img, .cat-card-preview img').forEach(img => {
+    /* ========== Attach lightbox to homepage images ========== */
+    document.querySelectorAll('.float-card img, .recent-card img').forEach(function(img) {
       img.style.cursor = 'zoom-in';
-      img.addEventListener('click', () => openLightbox(img.src, false));
+      img.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openLightbox(img.src, false);
+      });
+    });
+
+    /* ========== Category card click -> showcase ========== */
+    document.querySelectorAll('.cat-card[data-category]').forEach(function(card) {
+      card.addEventListener('click', function() {
+        window.location.hash = 'showcase/' + card.dataset.category;
+      });
     });
 
     /* ========== Nav scroll ========== */
-    window.addEventListener('scroll', () => {
-      const nav = document.querySelector('.nav');
+    window.addEventListener('scroll', function() {
+      var nav = document.querySelector('.nav');
       if (window.scrollY > 60) {
         nav.style.background = 'rgba(0,0,0,0.85)';
       } else {
@@ -1112,10 +1553,10 @@
     }, { passive: true });
 
     /* ========== Smooth scroll for nav links ========== */
-    document.querySelectorAll('.nav-center a').forEach(a => {
-      a.addEventListener('click', (e) => {
-        const href = a.getAttribute('href');
-        if (href.startsWith('#')) {
+    document.querySelectorAll('.nav-center a').forEach(function(a) {
+      a.addEventListener('click', function(e) {
+        var href = a.getAttribute('href');
+        if (href && href.startsWith('#') && !href.startsWith('#showcase/')) {
           e.preventDefault();
           document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
         }
@@ -1123,20 +1564,21 @@
     });
 
     /* ========== Keyboard carousel ========== */
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', function(e) {
+      if (lightbox.classList.contains('active')) return;
+      if (currentShowcase) return;
       if (e.key === 'ArrowLeft') document.querySelector('.carousel-arrow.prev')?.click();
       if (e.key === 'ArrowRight') document.querySelector('.carousel-arrow.next')?.click();
     });
 
     /* ========== Float card subtle parallax ========== */
-    document.querySelectorAll('.float-card').forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        card.style.zIndex = '10';
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.zIndex = '';
-      });
+    document.querySelectorAll('.float-card').forEach(function(card) {
+      card.addEventListener('mouseenter', function() { card.style.zIndex = '10'; });
+      card.addEventListener('mouseleave', function() { card.style.zIndex = ''; });
     });
+
+    /* ========== Initialize Router ========== */
+    handleRoute();
   </script>
 </body>
 </html>
